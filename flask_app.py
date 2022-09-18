@@ -17,10 +17,10 @@ def not_found(e):
     return '404 : Not Found'
 
 
-@app.route('/data', methods=['POST', 'GET'])
+@app.route('/', methods=['POST', 'GET'])
 def data():
     global temperature, humidity, light
-    return render_template("index.html", temperature, humidity, light)
+    return render_template("index.html", temperature=temperature, humidity=humidity, light=light)
 
 
 @app.route('/record', methods=['POST', 'GET'])
