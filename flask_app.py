@@ -20,7 +20,7 @@ def not_found(e):
 @app.route('/', methods=['POST', 'GET'])
 def data():
     global temperature, humidity, light
-    return render_template("index.html", temperature=temperature, humidity=humidity, light=light)
+    return render_template("index.html", temperature=round(temperature, 2), humidity=round(humidity, 2), light=light)
 
 
 @app.route('/record', methods=['POST', 'GET'])
