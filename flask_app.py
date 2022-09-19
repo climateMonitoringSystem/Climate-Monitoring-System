@@ -21,8 +21,8 @@ def not_found(e):
 def home():
     global temperature, humidity, light
     return render_template("home.html",
-                          temperature=round(temperature, 2),
-                          humidity=round(humidity, 2),
+                          temperature=temperature,
+                          humidity=humidity,
                           light=light,
                           activeH="active",
                           activeT="")
@@ -48,9 +48,9 @@ def record():
     try:
         global temperature, humidity, light
         content = request.get_json()
-        temperature = content.get("temperature")
-        humidity = content.get("humidity")
-        light = content.get("light")
+        temperature = round(content.get("temperature"),2)
+        humidity = round(content.get("humidity"),2)
+        light = round(content.get("light"),2)
         response["status"] = 1
 
     except Exception as e:
