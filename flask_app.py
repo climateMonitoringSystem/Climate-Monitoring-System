@@ -1,5 +1,5 @@
 
-# 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
+# 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
 from flask import (
     Flask, redirect,
     url_for, request, jsonify,
@@ -32,6 +32,15 @@ def team():
     return render_template("team.html", activeH="",
                           activeT="active")
 
+@app.route('/update', methods=['POST'])
+def update():
+
+    global temperature, humidity, light
+    return jsonify({
+        "temperature" : temperature,
+        "humidity" : humidity,
+        "light" :  light
+    })
 
 @app.route('/record', methods=['POST', 'GET'])
 def record():
