@@ -1,0 +1,31 @@
+{% extends "index.html" %}
+
+
+{% block content %}
+<main class="container mb-4 px-3">
+    <h1>Developer Team</h1>
+    <div class="row">
+        <div class="col col-md-6">
+            <div class="card bg-dark" style="width: 20rem; border-block-color: white;">
+                <img src="{{url_for ('static', filename='images/autor1.jpg')}}" height="340" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title">Ramya krishna vadlamudi</h5>
+                    <p href="#" class="link-secondary">ramyakrishna.vadlamudi@wmich.edu</p>
+                    <p href="#" class="link-secondary">+12693584490</p>
+                </div>
+            </div>
+        </div>
+        <div class="col col-md-6">
+            <div class="card bg-dark" style="width: 20rem; border-block-color: white;">
+                <img src="{{url_for ('static', filename='images/autor2.jpg')}}" height="340" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title">Leela Venkata Rama Sai Yeluri
+                    </h5>
+                    <p href="#" class="link-secondary">leelavenkataramasai.yeluri@wmich.edu</p>
+                    <p href="#" class="link-secondary">+16025386264</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
