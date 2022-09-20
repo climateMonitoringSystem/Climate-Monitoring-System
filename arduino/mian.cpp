@@ -1,5 +1,5 @@
 // For the DHT sensor
-#include <DHT.h> 
+#include <DHT.h>
 #include <DHT_U.h>
 // For the I2C adapter
 #include <LiquidCrystal_I2C.h>
@@ -12,96 +12,97 @@
 
 #define LDR A0
 
-const char* ssid = "BetelFO(3491)"; // Network ssid
-const char* password = "rocky@bruno2020"; // Network password
-const char* host = "http://climatemonitoringsystem.pythonanywhere.com/record"; // URL server
-
+const char *ssid = "BetelFO(3491)";                                            // Network ssid
+const char *password = "rocky@bruno2020";                                      // Network password
+const char *host = "http://climatemonitoringsystem.pythonanywhere.com/record"; // URL server
 
 LiquidCrystal_I2C lcd(0x27, 16, 2); // creating object lcd
-DHT dht(D4, DHT11); //  creating object dht
-HTTPClient http; // creating object http
-WiFiClient wifiClient; // creating object  wifi client
+DHT dht(D4, DHT11);                 //  creating object dht
+HTTPClient http;                    // creating object http
+WiFiClient wifiClient;              // creating object  wifi client
 
 // Variables to store the record
 float temperature, humidity;
 int light;
 
-void setup() {
+void setup()
+{
 
+    Serial.begin(9600);
 
-  Serial.begin(9600);
+    // Initializing lcd
+    lcd.init();
+    lcd.begin(16, 2);
+    lcd.backlight();
+    lcd.clear();
+    // Setting the cursor at position 0, 0 on the display
+    lcd.setCursor(0, 0);
+    // Printing message
+    lcd.print("Connecting...");
 
-  // Initializing lcd
-  lcd.init(); 
-  lcd.begin(16,2);
-  lcd.backlight();
-  lcd.clear();
-  // Setting the cursor at position 0, 0 on the display
-  lcd.setCursor(0, 0);
-  // Printing message
-  lcd.print("Connecting...");
+    // Trying to connect to the network
+    WiFi.begin(ssid, password);
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        // Delay of 500 milliseconds
+        delay(500);
+    }
 
-  // Trying to connect to the network
-  WiFi.begin(ssid, password);
-  while(WiFi.status() != WL_CONNECTED) {  
-    // Delay of 500 milliseconds
-    delay(500);
-  }  
+    String ip = WiFi.localIP().toString();
 
-  String ip = WiFi.localIP().toString();
-
-  // cleaning the screen
-  lcd.clear();
-  // Setting the cursor at position 0, 0 on the display
-  lcd.setCursor(0, 0);
-  lcd.print("Connected");
-  // Setting the cursor at position 0, 1 on the display
-  lcd.setCursor(0, 1);   
-  lcd.print("IP: " +  ip);  
-  // Delay of 2000 milliseconds = 2 seconds
-  delay(2000);
+    // cleaning the screen
+    lcd.clear();
+    // Setting the cursor at position 0, 0 on the display
+    lcd.setCursor(0, 0);
+    lcd.print("Connected");
+    // Setting the cursor at position 0, 1 on the display
+    lcd.setCursor(0, 1);
+    lcd.print("IP: " + ip);
+    // Delay of 2000 milliseconds = 2 seconds
+    delay(2000);
 }
 
-int readLight() {
-  return analogRead(A0);
+int readLight()
+{
+    return analogRead(A0);
 }
-void loop() {
-  
-  humidity = dht.readHumidity(); // Reading humidity
-  temperature = dht.readTemperature(); // Reading temperature
-  light = readLight(); // reading light
+void loop()
+{
 
+    humidity = dht.readHumidity();       // Reading humidity
+    temperature = dht.readTemperature(); // Reading temperature
+    light = readLight();                 // reading light
 
-  // Printing record
-  //
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(String(temperature) + "C  " + String(humidity) + "%HC");
-  lcd.setCursor(0, 1);      
-  lcd.print("   Light: " + String(light));
+    // Printing record
+    //
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(String(temperature) + "C  " + String(humidity) + "%HC");
+    lcd.setCursor(0, 1);
+    lcd.print("   Light: " + String(light));
 
-  // Checking network connection 
-  if (WiFi.status() == WL_CONNECTED) {
-      
-      http.begin(wifiClient, host); // Init connection
-      http.addHeader("Content-Type", "application/json"); // Adding header
+    // Checking network connection
+    if (WiFi.status() == WL_CONNECTED)
+    {
 
-      // Creating Json Document
-      DynamicJsonDocument doc(2048);
-      doc["temperature"] = temperature;
-      doc["humidity"] = humidity;
-      doc["light"] = light;
-      // Serialize JSON document
-      String json;
-      serializeJson(doc, json);
+        http.begin(wifiClient, host);                       // Init connection
+        http.addHeader("Content-Type", "application/json"); // Adding header
 
-      // Sending request 
-      int httpCode = http.POST(json);
-      // Ending connection
-      http.end();
-  }
+        // Creating Json Document
+        DynamicJsonDocument doc(2048);
+        doc["temperature"] = temperature;
+        doc["humidity"] = humidity;
+        doc["light"] = light;
+        // Serialize JSON document
+        String json;
+        serializeJson(doc, json);
 
-  // Delay of 2 seconds
-  delay(2000);
+        // Sending request
+        int httpCode = http.POST(json);
+        // Ending connection
+        http.end();
+    }
 
+    // Delay of 2 seconds
+    delay(2000);
 }
