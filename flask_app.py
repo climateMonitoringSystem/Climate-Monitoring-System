@@ -1,5 +1,4 @@
 
-# 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
 from flask import (
     Flask, redirect,
     url_for, request, jsonify,
